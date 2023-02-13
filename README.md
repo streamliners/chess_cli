@@ -22,3 +22,5 @@ TO RUN
 make
 ./chessMake
 ./chessMake P e2 e3
+
+![Alt text](./screenshot.png)

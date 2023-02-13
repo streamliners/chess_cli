@@ -6,10 +6,7 @@
 #include "moveValidation.h"
 #include "checkValidation.h"
 
-//verify if useless imports among these
 extern const char emptySquare;
-extern const char whitesTurn ;
-extern const char blacksTurn;
 extern const char blacksAreChecked;
 extern const char whitesAreChecked;
 	
@@ -27,15 +24,11 @@ extern const char blackBishop;
 extern const char blackQueen;
 extern const char blackKing;
 
-
-
 extern char whiteUntakablePieces[];
 extern char blackUntakablePieces[] ;
 
-
 const char *blackCheckedException = "The black king is still checked.";
 const char *whiteCheckedException = "The white king is still checked.";
-
 const char *statusChecked = "Check.";
 const char *statusCheckmate = "Checkmate!";
 const char *statusStalemate = "Stalemate!";	
@@ -210,13 +203,6 @@ int processChecks(char piecePos[], char previousState, bool mustPrint) {
 		
 		blacksCheckedNextTurn = areCheckedNextTurn(piecePos, positionKing1, positionKing2, positionKing3, whitePawn, whiteKnight, whiteBishop, whiteTower, whiteQueen);
 	}
-
-   	for(int loop = 0; loop < 69; loop++)
-     		 printf("%c ", piecePos[loop]);
-	printf("\npreviousState: %c\n", previousState);
-	printf("previousState: %c\n", previousState);
-	printf("whitesCheckedNextTurn: %d\n", whitesCheckedNextTurn);
-	printf("blacksCheckedNextTurn: %d\n", blacksCheckedNextTurn);
 		
 	if (whitesCheckedNextTurn == 1) {
 		if (previousState == blacksAreChecked) {
@@ -271,32 +257,21 @@ int foundSolution(char piecePos[], char* currentPiece, char currentState, int pr
 	int nextPlace3 = 64 - ((nextPlace2*8) - nextPlace1);
 	char* untakablePieces[7];
 	if (*currentPiece == whiteKing || *currentPiece == whiteKnight || *currentPiece == whiteQueen || *currentPiece == whiteBishop || *currentPiece == whiteTower || *currentPiece == whitePawn) {
-		//*untakablePieces = whiteUntakablePieces;
 		if (0 != validateAllMoves(piecePos, whiteUntakablePieces, currentPiece, previousPlace1, previousPlace2, previousPlace3, nextPlace1, nextPlace2, nextPlace3, mustPrint)) {
 			return 1;
 		}
 	} else {
-		//*untakablePieces = blackUntakablePieces;
 		if (0 != validateAllMoves(piecePos, blackUntakablePieces, currentPiece, previousPlace1, previousPlace2, previousPlace3, nextPlace1, nextPlace2, nextPlace3, mustPrint)) {
 			return 1;
 		}
 	}
 	
 	mainMoveAndPawnPromotion(piecePos, currentPiece, previousPlace3, nextPlace3);
-	
-	//change from previousState to 69
-	//printf("previousState: %c\n", previousState);
-	//printf("piecePos[69]: %c\n", piecePos[69]);
+
 	if (currentState != '_' && 0 != processChecks(piecePos, piecePos[69], mustPrint) && currentState == piecePos[69]) {
 		return 1;
 	}
-	
-	// not in main, new functionality
-	//printf("previousState: %c\n", previousState);
-	//printf("piecePos[69]: %c\n", piecePos[69]);
-	/*if (previousState != '_' && previousState == piecePos[69]) {
-		return 1;
-	}*/
+
 	return 0;
 }
 

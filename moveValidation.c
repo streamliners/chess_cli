@@ -5,7 +5,6 @@
 #include <stdbool.h>
 #include "moveValidation.h"
 
-
 extern const char emptySquare;
 extern const char whitesTurn ;
 extern const char blacksTurn;
@@ -26,12 +25,8 @@ extern const char blackBishop;
 extern const char blackQueen;
 extern const char blackKing;
 
-
-
 extern char whiteUntakablePieces[];
 extern char blackUntakablePieces[] ;
-	
-	
 					
 const char *wrongCoordinatesException	= "The coordinates are wrong.";			
 const char *invalidPieceException = "Such a piece does not exist.";					
@@ -62,7 +57,6 @@ const char *pawnMoveException = "Pawns cannot move like this.";
 const char *pawnTakeException = "This pawn cannot take this piece.";
 
 
-
 int throwInvalidMoveException(const char* message, bool mustPrint) {
 	if (mustPrint == true) {
 		printf("INVALID: %s\n", message);
@@ -71,10 +65,6 @@ int throwInvalidMoveException(const char* message, bool mustPrint) {
 }
 		
 int isTakingAnUntakablePiece(char targetPiece, char untakablePieces[], int size, const char* message, bool mustPrint) {
-	//printf("%c\n", targetPiece);
-	//printf("%c\n", untakablePieces[0]);
-	//printf("%d\n", size);
-
 	for (int i = 0; i < size; i++) {
 		if (targetPiece == untakablePieces[i]) {
 			return throwInvalidMoveException(message, mustPrint);
@@ -90,34 +80,34 @@ int validateTowerMove(char piecePos[], char untakablePieces[], int previousPlace
 		return throwInvalidMoveException(towerMoveException, mustPrint);
 	}
 	
-	if (previousPlace1 > nextPlace1){
+	if (previousPlace1 > nextPlace1) {
 		int var = previousPlace1 - nextPlace1;
-		for(int i = 1; i < var; i++){
-			if (piecePos[previousPlace3 - i] != emptySquare){
+		for (int i = 1; i < var; i++) {
+			if (piecePos[previousPlace3 - i] != emptySquare) {
 				return throwInvalidMoveException(towerPassException, mustPrint);
 			}
 		} 
 	}
-	if (previousPlace1 < nextPlace1){
+	if (previousPlace1 < nextPlace1) {
 		int var = nextPlace1 - previousPlace1;
-		for(int i = 1; i < var; i++){
-			if (piecePos[previousPlace3 + i] != emptySquare){
+		for (int i = 1; i < var; i++) {
+			if (piecePos[previousPlace3 + i] != emptySquare) {
 				return throwInvalidMoveException(towerPassException, mustPrint);
 			}
 		} 
 	}
-	if (previousPlace2 > nextPlace2){
+	if (previousPlace2 > nextPlace2) {
 		int var = previousPlace2 - nextPlace2;
-		for(int i = 1; i < var; i++){
-			if (piecePos[previousPlace3 + 8*i] != emptySquare){
+		for (int i = 1; i < var; i++) {
+			if (piecePos[previousPlace3 + 8*i] != emptySquare) {
 				return throwInvalidMoveException(towerPassException, mustPrint);
 			}
 		} 
 	}
-	if (previousPlace2 < nextPlace2){
+	if (previousPlace2 < nextPlace2) {
 		int var = nextPlace2 - previousPlace2;
-		for(int i = 1; i < var; i++){
-			if (piecePos[previousPlace3 - 8*i] != emptySquare){
+		for (int i = 1; i < var; i++) {
+			if (piecePos[previousPlace3 - 8*i] != emptySquare) {
 				return throwInvalidMoveException(towerPassException, mustPrint);
 			}
 		} 
@@ -129,40 +119,40 @@ int validateTowerMove(char piecePos[], char untakablePieces[], int previousPlace
 
 
 int validateBishopMove(char piecePos[], char untakablePieces[], int previousPlace1, int previousPlace2, int previousPlace3, int nextPlace1, int nextPlace2, int nextPlace3, bool mustPrint) {
-	if (fabs(previousPlace1 - nextPlace1) != fabs(previousPlace2 - nextPlace2)){
+	if (fabs(previousPlace1 - nextPlace1) != fabs(previousPlace2 - nextPlace2)) {
 		return throwInvalidMoveException(bishopMoveException, mustPrint);
 	}
 	//down, left
-	if (previousPlace1 > nextPlace1 && previousPlace2 > nextPlace2){
+	if (previousPlace1 > nextPlace1 && previousPlace2 > nextPlace2) {
 		int var = previousPlace1 - nextPlace1;
-		for(int i = 1; i < var; i++){
-			if (piecePos[previousPlace3 + 7*i] != emptySquare){
+		for (int i = 1; i < var; i++) {
+			if (piecePos[previousPlace3 + 7*i] != emptySquare) {
 				return throwInvalidMoveException(bishopPassException, mustPrint);
 			}
 		} 
 	}
 	//up, left
-	if (previousPlace1 > nextPlace1 && previousPlace2 < nextPlace2){
+	if (previousPlace1 > nextPlace1 && previousPlace2 < nextPlace2) {
 		int var = previousPlace1 - nextPlace1;
-		for(int i = 1; i < var; i++){
-			if (piecePos[previousPlace3 - 9*i] != emptySquare){
+		for (int i = 1; i < var; i++) {
+			if (piecePos[previousPlace3 - 9*i] != emptySquare) {
 				return throwInvalidMoveException(bishopPassException, mustPrint);
 			}
 		} 
 	}
 	//down, right
-	if (previousPlace1 < nextPlace1 && previousPlace2 > nextPlace2){
+	if (previousPlace1 < nextPlace1 && previousPlace2 > nextPlace2) {
 		int var = nextPlace1 - previousPlace1;
-		for(int i = 1; i < var; i++){
-			if (piecePos[previousPlace3 + 9*i] != emptySquare){
+		for (int i = 1; i < var; i++) {
+			if (piecePos[previousPlace3 + 9*i] != emptySquare) {
 				return throwInvalidMoveException(bishopPassException, mustPrint);
 			}
 		} 
 	}
 	//up, right
-	if (previousPlace1 < nextPlace1 && previousPlace2 < nextPlace2){
+	if (previousPlace1 < nextPlace1 && previousPlace2 < nextPlace2) {
 		int var = nextPlace1 - previousPlace1;
-		for(int i = 1; i < var; i++){
+		for (int i = 1; i < var; i++) {
 			if (piecePos[previousPlace3 - 7*i] != emptySquare){
 				return throwInvalidMoveException(bishopPassException, mustPrint);
 			}
@@ -181,38 +171,38 @@ int validateKingMove(char piecePos[], char untakablePieces[], char* currentPiece
 
 
 	//avoid moving in the reach of the other king
-	if (*currentPiece == whiteKing){
-		if (nextPlace1 > 0 && piecePos[nextPlace3 -1] == blackKing){
+	if (*currentPiece == whiteKing) {
+		if (nextPlace1 > 0 && piecePos[nextPlace3 -1] == blackKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
-		if (nextPlace1 > 0 && nextPlace2 < 8 && piecePos[nextPlace3 -9] == blackKing){
+		if (nextPlace1 > 0 && nextPlace2 < 8 && piecePos[nextPlace3 -9] == blackKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
-		if (nextPlace2 < 8 && piecePos[nextPlace3 -8] == blackKing){
+		if (nextPlace2 < 8 && piecePos[nextPlace3 -8] == blackKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
-		if (nextPlace1 < 7 && nextPlace2 < 8 && piecePos[nextPlace3 -7] == blackKing){
+		if (nextPlace1 < 7 && nextPlace2 < 8 && piecePos[nextPlace3 -7] == blackKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
-		if (nextPlace1 < 7 && piecePos[nextPlace3 +1] == blackKing){
+		if (nextPlace1 < 7 && piecePos[nextPlace3 +1] == blackKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
-		if (nextPlace1 < 7 && nextPlace2 > 1 && piecePos[nextPlace3 + 9] == blackKing){
+		if (nextPlace1 < 7 && nextPlace2 > 1 && piecePos[nextPlace3 + 9] == blackKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
-		if (nextPlace2 > 1 && piecePos[nextPlace3 +8] == blackKing){
+		if (nextPlace2 > 1 && piecePos[nextPlace3 +8] == blackKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
-		if (nextPlace1 > 0 && nextPlace2 > 1 && piecePos[nextPlace3 + 7] == blackKing){
+		if (nextPlace1 > 0 && nextPlace2 > 1 && piecePos[nextPlace3 + 7] == blackKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}				
 	}
 	
-	if (*currentPiece == blackKing){
-		if (nextPlace1 > 0 && piecePos[nextPlace3 -1] == whiteKing){
+	if (*currentPiece == blackKing) {
+		if (nextPlace1 > 0 && piecePos[nextPlace3 -1] == whiteKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
-		if (nextPlace1 > 0 && nextPlace2 < 8 && piecePos[nextPlace3 -9] == whiteKing){
+		if (nextPlace1 > 0 && nextPlace2 < 8 && piecePos[nextPlace3 -9] == whiteKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
 		if (nextPlace2 < 8 && piecePos[nextPlace3 -8] == whiteKing){

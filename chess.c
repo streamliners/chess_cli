@@ -8,8 +8,6 @@
 #include "moveValidation.h"
 #include "checkValidation.h"
 
-//functions declarations
-
 int getXCoordinatesFromInput(char*);
 int getYCoordinatesFromInput(char*);
 void drawBoard(char[]);
@@ -61,10 +59,13 @@ const char blackBishop = 'B';
 const char blackQueen = 'Q';
 const char blackKing = 'K';
 
+//ordered so that it will take less time to look for solutions: more pawns, the king is always present, the queen is valuable and carefully kept, etc.
+char blackPieces[6] = {blackPawn, blackKing, blackQueen, blackTower, blackKnight, blackBishop};
+char whitePieces[6] = {whitePawn, whiteKing, whiteQueen, whiteTower, whiteKnight, whiteBishop};
+// allies and enemy king
 char whiteUntakablePieces[7] = {whitePawn, whiteTower, whiteKnight, whiteBishop, whiteQueen, whiteKing, blackKing};		
 char blackUntakablePieces[7] = {blackPawn, blackTower, blackKnight, blackBishop, blackQueen, blackKing, whiteKing};
 
-//const int saveFileNameLength = 13;
 const char saveFileName[13] = "savefile.txt"; 
 
 const char codeSandbox[8] = "sandbox";
@@ -74,8 +75,7 @@ const char codeShow[5] = "show";
 
 int main(int argc, char* argv[]) {
 
-	float startTime = (float)clock()/CLOCKS_PER_SEC;
-
+	//float startTime = (float)clock()/CLOCKS_PER_SEC;
 	char piecePos[71] = "tnbqkbntpppppppp                                PPPPPPPPTNBQKBNT___1__";
 
 	FILE *savefile = fopen(saveFileName, "r+");
@@ -87,25 +87,18 @@ int main(int argc, char* argv[]) {
 		exit(0);
 	} 
 	
-	//reset option (input format is "./a.out reset")
+	//reset option (input format is "./chessMake reset")
 	if (argc == 2 && strcmp(argv[1], codeReset) == 0){
 		char rm[17] = "rm ";
 		system(strcat(rm, saveFileName));
 		drawBoard(piecePos);
 		return 0;
 	}
-
 	
 	fread(piecePos, 1, 71, savefile);
-	fclose(savefile);	
+	fclose(savefile);		
 
-	
-	printf("ARGC: %d\n", argc); 
-	printf("ARGV[1]: %s\n", argv[1]); 
-	
-	
-	
-	//sandbox mode (input format is "./a.out sandbox piece nextPlace(a,b)")
+	//sandbox mode (input format is "./chessMake sandbox piece nextPlace(a,b)")
 	// makes a new piece appear at given coordinates
 	if (argc == 4 && strcmp(argv[1], codeSandbox) == 0){
 		char *currentPiece = argv[2];
@@ -115,30 +108,24 @@ int main(int argc, char* argv[]) {
 		int nextPlace3 = 64 - ((nextPlace2*8) - nextPlace1);
 		piecePos[nextPlace3] = *currentPiece;
 		drawBoard(piecePos);
-	}
-
-
-	// show mode
-	// input format is "./a.out show"
-	if (argc == 2 && strcmp(argv[1], codeShow)  == 0) {
+		
+	} else if (argc == 2 && strcmp(argv[1], codeShow)  == 0) {
+		// show mode
+		// input format is "./chessMake show"
 		drawBoard(piecePos);
-	}
-
-	//normal mode (new input is piece VertiHori, e.g. T 8a 7a)
-	// input format is "./chessMake p 6,7 6,5"
-	if (argc >= 4 && strcmp(argv[1], codeSandbox) != 0){
+		
+	} else if (argc >= 4 && strcmp(argv[1], codeSandbox) != 0){
+		//normal mode (new input is like "T 8a 7a")
+		// input format is "./chessMake p 6,7 6,5"
 		char *currentPiece = argv[1];
 		char *previousPlace = argv[2];
 		char *nextPlace = argv[3];
-
-		//int previousPlace3 = 64 - ((previousPlace2*8) - previousPlace1);
-		//int nextPlace3 = 64 - ((nextPlace2*8) - nextPlace1);
 		
 		normalBody(piecePos, currentPiece, getXCoordinatesFromInput(previousPlace), getYCoordinatesFromInput(previousPlace), getXCoordinatesFromInput(nextPlace), getYCoordinatesFromInput(nextPlace), savefile);
 	}
 	
-	float	endTime = (float)clock()/CLOCKS_PER_SEC;
-	printf("Time taken: %f\n\n", endTime - startTime);
+	//float	endTime = (float)clock()/CLOCKS_PER_SEC;
+	//printf("Time taken: %f\n\n", endTime - startTime);
 }		
 
 int getXCoordinatesFromInput(char* input) {
@@ -159,50 +146,29 @@ int getXCoordinatesFromInput(char* input) {
 	} else if (*input == 'h') {
 		return 7;
 	} 
-	
-	//return (input[0]-'0') - 1;
 }
 	
 int getYCoordinatesFromInput(char* input) {
-	// 	return input[1]-'0';
 	return input[1]-'0';
-}	
-		
-		
+}
+
 int normalBody(char piecePos[], char* currentPiece, int previousPlace1, int previousPlace2, int nextPlace1, int nextPlace2, FILE* savefile) {		
 	char previousState = piecePos[69];
 	bool mustPrint = true;
-	
-	//allies and enemy kind
-	//compute immunePieces	
-	char whitePieces[6] = {whitePawn, whiteTower, whiteKnight, whiteBishop, whiteQueen, whiteKing};
-	char blackPieces[6] = {blackPawn, blackTower, blackKnight, blackBishop, blackQueen, blackKing};
 
 	//previousPlace1 is x coord, previousPlace2 is y coord, previousPlace3 is location in 2d array
 	int previousPlace3 = 64 - ((previousPlace2*8) - previousPlace1);
 	int nextPlace3 = 64 - ((nextPlace2*8) - nextPlace1);
 	char untakablePieces[6];
-	if (*currentPiece == whiteKing || *currentPiece == whiteKnight || *currentPiece == whiteQueen || *currentPiece == whiteBishop || *currentPiece == whiteTower || *currentPiece == whitePawn) {
-		//untakablePieces = whiteUntakablePieces;
-			
-		printf("currentPiece: %c\n", *currentPiece);
-		//printf("untakablePieces[0]: %s\n", *untakablePieces);
-	
+	if (*currentPiece == whiteKing || *currentPiece == whiteKnight || *currentPiece == whiteQueen || *currentPiece == whiteBishop || *currentPiece == whiteTower || *currentPiece == whitePawn) {	
 		if (0 != validateAllMoves(piecePos, whiteUntakablePieces, currentPiece, previousPlace1, previousPlace2, previousPlace3, nextPlace1, nextPlace2, nextPlace3, mustPrint)) {
 			return 1;
 		}
 	} else {
-		//untakablePieces = blackUntakablePieces;
-		
-		printf("currentPiece: %c\n", *currentPiece);
-		//printf("untakablePieces[0]: %s\n", *untakablePieces);
-	
 		if (0 != validateAllMoves(piecePos, blackUntakablePieces, currentPiece, previousPlace1, previousPlace2, previousPlace3, nextPlace1, nextPlace2, nextPlace3, mustPrint)) {
 			return 1;
 		}
 	}
-			
-
 
 	
 	mainMoveAndPawnPromotion(piecePos, currentPiece, previousPlace3, nextPlace3);
@@ -214,40 +180,25 @@ int normalBody(char piecePos[], char* currentPiece, int previousPlace1, int prev
 	drawBoard(piecePos);
 
 
-
-	//checkmate checking for blacks
 	if (piecePos[69] == blacksAreChecked) {
-		//ordered so that it will take less time to run: more pawns, the king is always present, the queen is valuable and carefully kept, etc.
-		char arrayPieces[6] = {'p', 'k', 'q', 't', 'n', 'b'};
-		isCheckmate(piecePos, arrayPieces, piecePos[69]);
-	}
-
-	//checkmate checking for whites
-	else if (piecePos[69] == whitesAreChecked) {
-		//ordered so that it will take less time to run: more pawns, the king is always present, the queen is valuable and carefully kept, etc.
-		char arrayPieces[6] = {'P', 'K', 'Q', 'T', 'N', 'B'};
-		isCheckmate(piecePos, arrayPieces, piecePos[69]);
-	}
-
-	//stalemate checking for the blacks
-	else if (piecePos[69] != blacksAreChecked && piecePos[69] != whitesAreChecked && piecePos[67] == blacksTurn) {
-		//ordered so that it will take less time to run: more pawns, the king is always present, the queen is valuable and carefully kept, etc.
-		char arrayPieces[6] = {'p', 'k', 'q', 't', 'n', 'b'};
-		isStalemate(piecePos, arrayPieces, piecePos[69]);
-	}
-
-	//stalemate checking for the whites
-	else if (piecePos[69] != blacksAreChecked && piecePos[69] != whitesAreChecked && piecePos[67] == whitesTurn) {
-		//ordered so that it will take less time to run: more pawns, the king is always present, the queen is valuable and carefully kept, etc.
-		char arrayPieces[6] = {'P', 'K', 'Q', 'T', 'N', 'B'};
-		isStalemate(piecePos, arrayPieces, piecePos[69]);
+		//checkmate checking for blacks
+		isCheckmate(piecePos, whitePieces, piecePos[69]);
+	} else if (piecePos[69] == whitesAreChecked) {
+		//checkmate checking for whites
+		isCheckmate(piecePos, blackPieces, piecePos[69]);
+	} else if (piecePos[69] != blacksAreChecked && piecePos[69] != whitesAreChecked && piecePos[67] == blacksTurn) {
+		//stalemate checking for the blacks
+		isStalemate(piecePos, whitePieces, piecePos[69]);
+	} else if (piecePos[69] != blacksAreChecked && piecePos[69] != whitesAreChecked && piecePos[67] == whitesTurn) {
+		//stalemate checking for the whites
+		isStalemate(piecePos, blackPieces, piecePos[69]);
 	}
 	
-	if (piecePos[67] == whitesTurn) {
+	/* if (piecePos[67] == whitesTurn) {
 		displayStatus(whitesTurnStatus);
 	} else {
 		displayStatus(blacksTurnStatus);
-	}
+	} */
 
 	return 0;
 }
@@ -274,13 +225,6 @@ void drawBoard(char piecePos[]) {
 	}
 
 	FILE* savefile2 = fopen(saveFileName, "w+");
-	//fseek(savefile2, 0, SEEK_SET);
 	fwrite(piecePos, 1, 71, savefile2);
 	fclose(savefile2);
-
-	//tmp
-	printf("%c\n", piecePos[67]);
-	printf("%c\n", piecePos[68]);
-	printf("%c\n", piecePos[69]);
-	//tmp
 }
