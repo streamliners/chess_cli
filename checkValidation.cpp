@@ -1,31 +1,13 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
 #include <stdbool.h>
+#include "global.h"
 #include "moveValidation.h"
 #include "checkValidation.h"
-
-extern const char emptySquare;
-extern const char blacksAreChecked;
-extern const char whitesAreChecked;
-	
-extern const char whitePawn;
-extern const char whiteTower;
-extern const char whiteKnight;
-extern const char whiteBishop;
-extern const char whiteQueen;
-extern const char whiteKing;
-
-extern const char blackPawn;
-extern const char blackTower;
-extern const char blackKnight;
-extern const char blackBishop;
-extern const char blackQueen;
-extern const char blackKing;
-
-extern char whiteUntakablePieces[];
-extern char blackUntakablePieces[] ;
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+using namespace std;
 
 const char *blackCheckedException = "The black king is still checked.";
 const char *whiteCheckedException = "The white king is still checked.";
@@ -35,7 +17,7 @@ const char *statusStalemate = "Stalemate!";
 
 
 void displayStatus(const char* message) {
-	printf("%s\n\n", message);
+	cout << message << endl << endl;
 } 
 
 void blackGetsChecked(const char* statusChecked, char piecePos[]) {
@@ -293,6 +275,8 @@ char getInputFromXCoordinates(int coordinate) {
 	} else if (coordinate == 7) {
 		return 'h';
 	} 
+
+	return 'a';
 }
 
 int isCheckmate(char piecePos[], char arrayPieces[], char previousState) {
@@ -312,7 +296,7 @@ int isCheckmate(char piecePos[], char arrayPieces[], char previousState) {
 						strcpy(newPiecePos, piecePos);
 						char* currentPiece = arrayPieces;
 						if (0 == foundSolution(piecePos, currentPiece, previousState, j, k, o, q))  {
-							printf("%c %c%d %c%d is a possible solution.\n", arrayPieces[i], getInputFromXCoordinates(j), k, getInputFromXCoordinates(o), q);
+							cout << arrayPieces[i] << " " << getInputFromXCoordinates(j) << k << " " << getInputFromXCoordinates(o) << q << " is a possible solution." << endl;
 							return 0;
 						}
 					}		

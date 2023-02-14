@@ -1,11 +1,15 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
 #include <time.h>
 #include <stdbool.h>
+#include "global.h"
 #include "moveValidation.h"
 #include "checkValidation.h"
+#include <cstdio>
+#include <cstring>
+#include <string>
+#include <iostream>
+using namespace std;
 
 int getXCoordinatesFromInput(char*);
 int getYCoordinatesFromInput(char*);
@@ -34,46 +38,6 @@ int normalBody(char[], char*, int, int, int, int, FILE*);
 	fix the checkmate/check bugs
 */
 
-const char emptySquare = ' ';
-//1 means "Whites played. Next turn: black", and 2 means "Blacks played. Next turn: white"
-const char whitesTurn = '1';
-const char blacksTurn = '2';
-const char* whitesTurnStatus = "White's turn";
-const char* blacksTurnStatus = "Black's turn";
-
-const char blacksAreChecked = 'c';
-const char whitesAreChecked = 'C';
-	
-const char whitePawn = 'p';
-const char whiteTower = 't';
-const char whiteKnight = 'n';
-const char whiteBishop = 'b';
-const char whiteQueen = 'q';
-const char whiteKing = 'k';
-
-const char blackPawn = 'P';
-const char blackTower = 'T';
-const char blackKnight = 'N';
-const char blackBishop = 'B';
-const char blackQueen = 'Q';
-const char blackKing = 'K';
-
-//ordered so that it will take less time to look for solutions: more pawns, the king is always present, the queen is valuable and carefully kept, etc.
-char blackPieces[6] = {blackPawn, blackKing, blackQueen, blackTower, blackKnight, blackBishop};
-char whitePieces[6] = {whitePawn, whiteKing, whiteQueen, whiteTower, whiteKnight, whiteBishop};
-// allies and enemy king
-char whiteUntakablePieces[7] = {whitePawn, whiteTower, whiteKnight, whiteBishop, whiteQueen, whiteKing, blackKing};		
-char blackUntakablePieces[7] = {blackPawn, blackTower, blackKnight, blackBishop, blackQueen, blackKing, whiteKing};
-
-const char saveFileName[13] = "savefile.txt"; 
-
-const char codeSandbox[8] = "sandbox";
-const char codeReset[6] = "reset";
-const char codeShow[5] = "show";
-const char debugModifier[7] = "-debug";
-const char welcomeMessage[44] = "Welcome, the chess game will begin soon !\n\n";
-
-
 int main(int argc, char* argv[]) {
 
 	float startTime = (float)clock()/CLOCKS_PER_SEC;
@@ -83,13 +47,14 @@ int main(int argc, char* argv[]) {
 	if (savefile == NULL) {
 		// this occurs when it's a new game
 		savefile = fopen(saveFileName, "w+");
-		printf(welcomeMessage);
+		cout << welcomeMessage;
 		drawBoard(piecePos);
 		exit(0);
 	} 
 	
+	string argv1 = argv[1];
 	// reset option (input format is "./chessMake reset")
-	if (argc == 2 && strcmp(argv[1], codeReset) == 0){
+	if (argc == 2 && argv1.compare(codeReset) == 0){
 		char rm[17] = "rm ";
 		system(strcat(rm, saveFileName));
 		drawBoard(piecePos);
@@ -101,21 +66,20 @@ int main(int argc, char* argv[]) {
 
 	// sandbox mode (input format is "./chessMake sandbox piece nextPlace(a,b)")
 	// makes a new piece appear at given coordinates
-	if (argc == 4 && strcmp(argv[1], codeSandbox) == 0){
+	if (argc == 4 && argv1.compare(codeSandbox) == 0) {
 		char *currentPiece = argv[2];
-		char *nextPlace = argv[3];
 		int nextPlace1 = getXCoordinatesFromInput(argv[3]);
 		int nextPlace2 = getYCoordinatesFromInput(argv[3]);
 		int nextPlace3 = 64 - ((nextPlace2*8) - nextPlace1);
 		piecePos[nextPlace3] = *currentPiece;
 		drawBoard(piecePos);
 		
-	} else if (argc == 2 && strcmp(argv[1], codeShow)  == 0) {
+	} else if (argc == 2 && argv1.compare(codeShow) == 0) {
 		// show mode
 		// input format is "./chessMake show"
 		drawBoard(piecePos);
 		
-	} else if (argc >= 4 && strcmp(argv[1], codeSandbox) != 0){
+	} else if (argc >= 4 && argv1.compare(codeSandbox) != 0) {
 		// normal mode (new input is like "T 8a 7a")
 		// input format is "./chessMake p 6,7 6,5"
 		char *currentPiece = argv[1];
@@ -125,7 +89,7 @@ int main(int argc, char* argv[]) {
 		normalBody(piecePos, currentPiece, getXCoordinatesFromInput(previousPlace), getYCoordinatesFromInput(previousPlace), getXCoordinatesFromInput(nextPlace), getYCoordinatesFromInput(nextPlace), savefile);
 
 		// debug option
-		if (argc == 5 && strcmp(argv[4], debugModifier) == 0) {
+		if (argc == 5 && string(argv[4]).compare(debugModifier) == 0) {
 			if (piecePos[67] == whitesTurn) {
 				displayStatus(whitesTurnStatus);
 			} else {
@@ -133,7 +97,7 @@ int main(int argc, char* argv[]) {
 			}
 			
 			float endTime = (float)clock()/CLOCKS_PER_SEC;
-			printf("Time taken: %f\n\n", endTime - startTime);
+			cout << "Time taken: " << endTime - startTime << endl << endl;
 		}
 	}
 }		
@@ -156,6 +120,7 @@ int getXCoordinatesFromInput(char* input) {
 	} else if (*input == 'h') {
 		return 7;
 	} 
+	return 0;
 }
 	
 int getYCoordinatesFromInput(char* input) {
@@ -169,7 +134,6 @@ int normalBody(char piecePos[], char* currentPiece, int previousPlace1, int prev
 	//previousPlace1 is x coord, previousPlace2 is y coord, previousPlace3 is location in 2d array
 	int previousPlace3 = 64 - ((previousPlace2*8) - previousPlace1);
 	int nextPlace3 = 64 - ((nextPlace2*8) - nextPlace1);
-	char untakablePieces[6];
 	if (*currentPiece == whiteKing || *currentPiece == whiteKnight || *currentPiece == whiteQueen || *currentPiece == whiteBishop || *currentPiece == whiteTower || *currentPiece == whitePawn) {	
 		if (0 != validateAllMoves(piecePos, whiteUntakablePieces, currentPiece, previousPlace1, previousPlace2, previousPlace3, nextPlace1, nextPlace2, nextPlace3, mustPrint)) {
 			return 1;
@@ -179,7 +143,6 @@ int normalBody(char piecePos[], char* currentPiece, int previousPlace1, int prev
 			return 1;
 		}
 	}
-
 	
 	mainMoveAndPawnPromotion(piecePos, currentPiece, previousPlace3, nextPlace3);
 	
@@ -188,7 +151,6 @@ int normalBody(char piecePos[], char* currentPiece, int previousPlace1, int prev
 	}
 
 	drawBoard(piecePos);
-
 
 	if (piecePos[69] == blacksAreChecked) {
 		//checkmate checking for blacks
@@ -208,21 +170,23 @@ int normalBody(char piecePos[], char* currentPiece, int previousPlace1, int prev
 }
 
 void drawBoard(char piecePos[]) {
-	printf("\n");
+	cout << endl;
 	for (int i = 0; i < 18; i++){
 		if (i == 17){
-			printf("\t    a   b   c   d   e   f   g   h  \n");
+			cout << "\t    a   b   c   d   e   f   g   h  " << endl;
 			continue;
 		}
 		else if ((i%2) == 0){
-			printf("\t  ---------------------------------\n");
+			cout << ("\t  ---------------------------------") << endl;
 		}
 		else if ((i%2) == 1){
+			int yCoordinate = 8-i/2;
 			int first = 8*(i/2);
-			printf("\t%d | %c | %c | %c | %c | %c | %c | %c | %c |\n", 8-i/2, piecePos[first], piecePos[first+1], piecePos[first+2], piecePos[first+3], piecePos[first+4], piecePos[first+5], piecePos[first+6], piecePos[first+7]);
+			cout << "\t" << yCoordinate << " | " << piecePos[first]  << " | " << piecePos[first + 1] << " | " << piecePos[first + 2] << " | " << piecePos[first + 3] 
+				<< " | " << piecePos[first + 4] << " | " << piecePos[first + 5] << " | " << piecePos[first + 6] << " | " << piecePos[first + 7] << " |" << endl;
 		} 
 	}
-	printf("\n");
+	cout << endl;
 
 	if (piecePos[67] == whitesTurn){
 		piecePos[67] = blacksTurn;

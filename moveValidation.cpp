@@ -1,32 +1,12 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
 #include <stdbool.h>
+#include "global.h"
 #include "moveValidation.h"
-
-extern const char emptySquare;
-extern const char whitesTurn ;
-extern const char blacksTurn;
-extern const char blacksAreChecked;
-extern const char whitesAreChecked;
-	
-extern const char whitePawn;
-extern const char whiteTower;
-extern const char whiteKnight;
-extern const char whiteBishop;
-extern const char whiteQueen;
-extern const char whiteKing;
-
-extern const char blackPawn;
-extern const char blackTower;
-extern const char blackKnight;
-extern const char blackBishop;
-extern const char blackQueen;
-extern const char blackKing;
-
-extern char whiteUntakablePieces[];
-extern char blackUntakablePieces[] ;
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+using namespace std;
 					
 const char *wrongCoordinatesException = "The coordinates are wrong.";			
 const char *invalidPieceException = "Such a piece does not exist.";					
@@ -59,7 +39,7 @@ const char *pawnTakeException = "This pawn cannot take this piece.";
 
 int throwInvalidMoveException(const char* message, bool mustPrint) {
 	if (mustPrint == true) {
-		printf("INVALID: %s\n", message);
+		cout << "INVALID: " << message << endl;
 	}
 	return 1;
 }
@@ -153,7 +133,7 @@ int validateBishopMove(char piecePos[], char untakablePieces[], int previousPlac
 	if (previousPlace1 < nextPlace1 && previousPlace2 < nextPlace2) {
 		int var = nextPlace1 - previousPlace1;
 		for (int i = 1; i < var; i++) {
-			if (piecePos[previousPlace3 - 7*i] != emptySquare){
+			if (piecePos[previousPlace3 - 7*i] != emptySquare) {
 				return throwInvalidMoveException(bishopPassException, mustPrint);
 			}
 		} 
@@ -165,7 +145,9 @@ int validateBishopMove(char piecePos[], char untakablePieces[], int previousPlac
 
 int validateKingMove(char piecePos[], char untakablePieces[], char* currentPiece, int previousPlace1, int previousPlace2, int previousPlace3, int nextPlace1, int nextPlace2, int nextPlace3, bool mustPrint) {
 //if (fabs(previousPlace1 - nextPlace1) != 1 || fabs(previousPlace2 - nextPlace2) != 1){
-	if (!( (fabs(previousPlace1 - nextPlace1) == 1 && fabs(previousPlace2 - nextPlace2) == 1) || (fabs(previousPlace1 - nextPlace1) == 0 && fabs(previousPlace2 - nextPlace2) == 1) || (fabs(previousPlace1 - nextPlace1) == 1 && fabs(previousPlace2 - nextPlace2) == 0)))  {			
+	if (!( (fabs(previousPlace1 - nextPlace1) == 1 && fabs(previousPlace2 - nextPlace2) == 1) 
+		|| (fabs(previousPlace1 - nextPlace1) == 0 && fabs(previousPlace2 - nextPlace2) == 1) 
+		|| (fabs(previousPlace1 - nextPlace1) == 1 && fabs(previousPlace2 - nextPlace2) == 0)))  {			
 		return throwInvalidMoveException(kingMoveException, mustPrint);
 	}
 	
