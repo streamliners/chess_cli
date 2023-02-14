@@ -1,4 +1,3 @@
-//chess game
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -71,23 +70,25 @@ const char saveFileName[13] = "savefile.txt";
 const char codeSandbox[8] = "sandbox";
 const char codeReset[6] = "reset";
 const char codeShow[5] = "show";
+const char debugModifier[7] = "-debug";
+const char welcomeMessage[44] = "Welcome, the chess game will begin soon !\n\n";
 
 
 int main(int argc, char* argv[]) {
 
-	//float startTime = (float)clock()/CLOCKS_PER_SEC;
+	float startTime = (float)clock()/CLOCKS_PER_SEC;
 	char piecePos[71] = "tnbqkbntpppppppp                                PPPPPPPPTNBQKBNT___1__";
 
 	FILE *savefile = fopen(saveFileName, "r+");
 	if (savefile == NULL) {
-		//this occurs when it's a new game
+		// this occurs when it's a new game
 		savefile = fopen(saveFileName, "w+");
-		printf("Welcome, the chess game will begin soon !\n\n");
+		printf(welcomeMessage);
 		drawBoard(piecePos);
 		exit(0);
 	} 
 	
-	//reset option (input format is "./chessMake reset")
+	// reset option (input format is "./chessMake reset")
 	if (argc == 2 && strcmp(argv[1], codeReset) == 0){
 		char rm[17] = "rm ";
 		system(strcat(rm, saveFileName));
@@ -98,7 +99,7 @@ int main(int argc, char* argv[]) {
 	fread(piecePos, 1, 71, savefile);
 	fclose(savefile);		
 
-	//sandbox mode (input format is "./chessMake sandbox piece nextPlace(a,b)")
+	// sandbox mode (input format is "./chessMake sandbox piece nextPlace(a,b)")
 	// makes a new piece appear at given coordinates
 	if (argc == 4 && strcmp(argv[1], codeSandbox) == 0){
 		char *currentPiece = argv[2];
@@ -115,17 +116,26 @@ int main(int argc, char* argv[]) {
 		drawBoard(piecePos);
 		
 	} else if (argc >= 4 && strcmp(argv[1], codeSandbox) != 0){
-		//normal mode (new input is like "T 8a 7a")
+		// normal mode (new input is like "T 8a 7a")
 		// input format is "./chessMake p 6,7 6,5"
 		char *currentPiece = argv[1];
 		char *previousPlace = argv[2];
 		char *nextPlace = argv[3];
 		
 		normalBody(piecePos, currentPiece, getXCoordinatesFromInput(previousPlace), getYCoordinatesFromInput(previousPlace), getXCoordinatesFromInput(nextPlace), getYCoordinatesFromInput(nextPlace), savefile);
+
+		// debug option
+		if (argc == 5 && strcmp(argv[4], debugModifier) == 0) {
+			if (piecePos[67] == whitesTurn) {
+				displayStatus(whitesTurnStatus);
+			} else {
+				displayStatus(blacksTurnStatus);
+			}
+			
+			float endTime = (float)clock()/CLOCKS_PER_SEC;
+			printf("Time taken: %f\n\n", endTime - startTime);
+		}
 	}
-	
-	//float	endTime = (float)clock()/CLOCKS_PER_SEC;
-	//printf("Time taken: %f\n\n", endTime - startTime);
 }		
 
 int getXCoordinatesFromInput(char* input) {
@@ -193,17 +203,12 @@ int normalBody(char piecePos[], char* currentPiece, int previousPlace1, int prev
 		//stalemate checking for the whites
 		isStalemate(piecePos, blackPieces, piecePos[69]);
 	}
-	
-	/* if (piecePos[67] == whitesTurn) {
-		displayStatus(whitesTurnStatus);
-	} else {
-		displayStatus(blacksTurnStatus);
-	} */
 
 	return 0;
 }
 
 void drawBoard(char piecePos[]) {
+	printf("\n");
 	for (int i = 0; i < 18; i++){
 		if (i == 17){
 			printf("\t    a   b   c   d   e   f   g   h  \n");
@@ -217,6 +222,7 @@ void drawBoard(char piecePos[]) {
 			printf("\t%d | %c | %c | %c | %c | %c | %c | %c | %c |\n", 8-i/2, piecePos[first], piecePos[first+1], piecePos[first+2], piecePos[first+3], piecePos[first+4], piecePos[first+5], piecePos[first+6], piecePos[first+7]);
 		} 
 	}
+	printf("\n");
 
 	if (piecePos[67] == whitesTurn){
 		piecePos[67] = blacksTurn;

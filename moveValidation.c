@@ -28,7 +28,7 @@ extern const char blackKing;
 extern char whiteUntakablePieces[];
 extern char blackUntakablePieces[] ;
 					
-const char *wrongCoordinatesException	= "The coordinates are wrong.";			
+const char *wrongCoordinatesException = "The coordinates are wrong.";			
 const char *invalidPieceException = "Such a piece does not exist.";					
 const char *movingNothingException = "You are not moving anything. Try again.";							
 const char *pieceIsntHereException = "You are moving a piece that is not here.";								
@@ -168,305 +168,211 @@ int validateKingMove(char piecePos[], char untakablePieces[], char* currentPiece
 	if (!( (fabs(previousPlace1 - nextPlace1) == 1 && fabs(previousPlace2 - nextPlace2) == 1) || (fabs(previousPlace1 - nextPlace1) == 0 && fabs(previousPlace2 - nextPlace2) == 1) || (fabs(previousPlace1 - nextPlace1) == 1 && fabs(previousPlace2 - nextPlace2) == 0)))  {			
 		return throwInvalidMoveException(kingMoveException, mustPrint);
 	}
+	
+		/*-------------
+          | -9| -8| -7|
+          -------------
+          | -1| k | +1| 
+          -------------
+          | +7| +8| +9| 
+          -------------*/
+	char* enemyKing;
+	char* enemyQueen;
+	char* enemyBishop;
+	char* enemyKnight;
+	char* enemyTower;
 
+	if (*currentPiece == whiteKing) {
+		*enemyKing = blackKing;
+		*enemyQueen = blackQueen;
+		*enemyBishop = blackBishop;
+		*enemyKnight = blackKnight;
+		*enemyTower = blackTower;
+	} else {
+		*enemyKing = whiteKing;
+		*enemyQueen = whiteQueen;
+		*enemyBishop = whiteBishop;
+		*enemyKnight = whiteKnight;
+		*enemyTower = whiteTower;
+	}
 
 	//avoid moving in the reach of the other king
-	if (*currentPiece == whiteKing) {
-		if (nextPlace1 > 0 && piecePos[nextPlace3 -1] == blackKing) {
+	if (nextPlace1 > 0) {
+		if (piecePos[nextPlace3 - 1] == *enemyKing) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
+		} 
+		if (nextPlace2 < 8 && piecePos[nextPlace3 - 9] == *enemyKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
-		if (nextPlace1 > 0 && nextPlace2 < 8 && piecePos[nextPlace3 -9] == blackKing) {
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace2 < 8 && piecePos[nextPlace3 -8] == blackKing) {
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace1 < 7 && nextPlace2 < 8 && piecePos[nextPlace3 -7] == blackKing) {
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace1 < 7 && piecePos[nextPlace3 +1] == blackKing) {
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace1 < 7 && nextPlace2 > 1 && piecePos[nextPlace3 + 9] == blackKing) {
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace2 > 1 && piecePos[nextPlace3 +8] == blackKing) {
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace1 > 0 && nextPlace2 > 1 && piecePos[nextPlace3 + 7] == blackKing) {
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}				
-	}
-	
-	if (*currentPiece == blackKing) {
-		if (nextPlace1 > 0 && piecePos[nextPlace3 -1] == whiteKing) {
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace1 > 0 && nextPlace2 < 8 && piecePos[nextPlace3 -9] == whiteKing) {
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace2 < 8 && piecePos[nextPlace3 -8] == whiteKing){
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace1 < 7 && nextPlace2 < 8 && piecePos[nextPlace3 -7] == whiteKing){
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace1 < 7 && piecePos[nextPlace3 +1] == whiteKing){
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace1 < 7 && nextPlace2 > 1 && piecePos[nextPlace3 + 9] == whiteKing){
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace2 > 1 && piecePos[nextPlace3 +8] == whiteKing){
-			return throwInvalidMoveException(kingMoveException, mustPrint);
-		}
-		if (nextPlace1 > 0 && nextPlace2 > 1 && piecePos[nextPlace3 + 7] == whiteKing){
+		if (nextPlace2 > 1 && piecePos[nextPlace3 + 7] == *enemyKing) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}	
+	} 
+	if (nextPlace1 < 7) {
+		if (piecePos[nextPlace3 + 1] == *enemyKing) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
+		}
+		if (nextPlace2 < 8 && piecePos[nextPlace3 - 7] == *enemyKing) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
+		}
+		if (nextPlace2 > 1 && piecePos[nextPlace3 + 9] == *enemyKing) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
+		}
+	}
+
+	if (nextPlace2 < 8 && piecePos[nextPlace3 - 8] == *enemyKing) {
+		return throwInvalidMoveException(kingMoveException, mustPrint);
+	}
+	if (nextPlace2 > 1 && piecePos[nextPlace3 + 8] == *enemyKing) {
+		return throwInvalidMoveException(kingMoveException, mustPrint);
 	}
 	
+
 	//avoid moving in the reach of the other pawns
 	if (*currentPiece == whiteKing){
 		//left side
-		if (nextPlace1 > 0 && nextPlace2 > 1 && piecePos[nextPlace3 + 7] == blackPawn){
+		if (nextPlace1 > 0 && nextPlace2 > 1 && piecePos[nextPlace3 + 7] == blackPawn) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
 		//right side
-		if (nextPlace1 < 7 && nextPlace2 > 1 && piecePos[nextPlace3 + 9] == blackPawn){
+		if (nextPlace1 < 7 && nextPlace2 > 1 && piecePos[nextPlace3 + 9] == blackPawn) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
 	}
 	if (*currentPiece == blackKing){
 		//left side
-		if (nextPlace1 > 0 && nextPlace2 < 8 && piecePos[nextPlace3 - 9] == whitePawn){
+		if (nextPlace1 > 0 && nextPlace2 < 8 && piecePos[nextPlace3 - 9] == whitePawn) {
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
 		//right side
-		if (nextPlace1 < 7 && nextPlace2 < 8 && piecePos[nextPlace3 - 7] == whitePawn){
+		if (nextPlace1 < 7 && nextPlace2 < 8 && piecePos[nextPlace3 - 7] == whitePawn){ 
 			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
 	}
+
 	//avoid moving in the reach of the other knights
-	if (*currentPiece == whiteKing){
-		if (nextPlace2 < 7){
-			if (nextPlace1 != 0 && piecePos[nextPlace3 - 17] == blackKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-			if (nextPlace1 != 7 && piecePos[nextPlace3 - 15] == blackKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
+	if (nextPlace2 < 7) {
+		if (nextPlace1 != 0 && piecePos[nextPlace3 - 17] == *enemyKnight) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
-		if (nextPlace2 < 8){
-			if (nextPlace1 > 1 && piecePos[nextPlace3 - 10] == blackKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-			if (nextPlace1 < 6 && piecePos[nextPlace3 - 6] == blackKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		if (nextPlace2 > 1){
-			if (nextPlace1 > 1 && piecePos[nextPlace3 + 6] == blackKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-			if (nextPlace1 < 6 && piecePos[nextPlace3 + 10] == blackKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		if (nextPlace2 > 2){
-			if (nextPlace1 > 1 && piecePos[nextPlace3 + 15] == blackKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-			if (nextPlace1 < 7 && piecePos[nextPlace3 + 17] == blackKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
+		if (nextPlace1 != 7 && piecePos[nextPlace3 - 15] == *enemyKnight) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
 	}
-	//same here
-	if (*currentPiece == blackKing){
-		if (nextPlace2 < 7){
-			if (nextPlace1 != 0 && piecePos[nextPlace3 - 17] == whiteKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-			if (nextPlace1 != 7 && piecePos[nextPlace3 - 15] == whiteKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
+	if (nextPlace2 < 8) {
+		if (nextPlace1 > 1 && piecePos[nextPlace3 - 10] == *enemyKnight) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
-		if (nextPlace2 < 8){
-			if (nextPlace1 > 1 && piecePos[nextPlace3 - 10] == whiteKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-			if (nextPlace1 < 6 && piecePos[nextPlace3 - 6] == whiteKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		if (nextPlace2 > 1){
-			if (nextPlace1 > 1 && piecePos[nextPlace3 + 6] == whiteKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-			if (nextPlace1 < 6 && piecePos[nextPlace3 + 10] == whiteKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		if (nextPlace2 > 2){
-			if (nextPlace1 > 1 && piecePos[nextPlace3 + 15] == whiteKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-			if (nextPlace1 < 7 && piecePos[nextPlace3 + 17] == whiteKnight){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
+		if (nextPlace1 < 6 && piecePos[nextPlace3 - 6] == *enemyKnight) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
 		}
 	}
+	if (nextPlace2 > 1) {
+		if (nextPlace1 > 1 && piecePos[nextPlace3 + 6] == *enemyKnight) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
+		}
+		if (nextPlace1 < 6 && piecePos[nextPlace3 + 10] == *enemyKnight) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
+		}
+	}
+	if (nextPlace2 > 2) {
+		if (nextPlace1 > 1 && piecePos[nextPlace3 + 15] == *enemyKnight) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
+		}
+		if (nextPlace1 < 7 && piecePos[nextPlace3 + 17] == *enemyKnight) {
+			return throwInvalidMoveException(kingMoveException, mustPrint);
+		}
+	}
+
+
 	//avoid moving in the reach of the other bishops and the queen diagonally
-	if (*currentPiece == whiteKing){
-		//up, right diagonal 
-		for(int i = 1; i < 8 - nextPlace1; i++){
-			if (piecePos[nextPlace3 - 7*i] == whiteKnight || piecePos[nextPlace3 - 7*i] == whiteQueen || piecePos[nextPlace3 - 7*i] == whiteBishop || piecePos[nextPlace3 - 7*i] == whiteTower || piecePos[nextPlace3 - 7*i] == whitePawn || piecePos[nextPlace3 - 7*i] == blackKing || piecePos[nextPlace3 - 7*i] == blackKnight || piecePos[nextPlace3 - 7*i] == blackTower || piecePos[nextPlace3 - 7*i] == blackPawn){
+	//up, right diagonal 
+	for (int i = 1; i < 8 - nextPlace1; i++) {
+		char currentSquare = piecePos[nextPlace3 - 7 * i];
+		if (currentSquare != emptySquare) {
+			if (currentSquare != *enemyBishop && currentSquare != *enemyQueen) {
 				break;
-			}
-			if (piecePos[nextPlace3 - 7*i] == blackBishop || piecePos[nextPlace3 - 7*i] == blackQueen){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		//down, left diagonal 
-		for(int i = 1; i < nextPlace1 + 1; i++){
-			if (piecePos[nextPlace3 + 7*i] == whiteKnight || piecePos[nextPlace3 + 7*i] == whiteQueen || piecePos[nextPlace3 + 7*i] == whiteBishop || piecePos[nextPlace3 + 7*i] == whiteTower || piecePos[nextPlace3 + 7*i] == whitePawn || piecePos[nextPlace3 + 7*i] == blackKing || piecePos[nextPlace3 + 7*i] == blackKnight || piecePos[nextPlace3 + 7*i] == blackTower || piecePos[nextPlace3 + 7*i] == blackPawn){
-				break;
-			}
-			if (piecePos[nextPlace3 + 7*i] == blackBishop || piecePos[nextPlace3 + 7*i] == blackQueen){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		//down, right diagonal
-		for(int i = 1; i < 8 - nextPlace1; i++){
-			if (piecePos[nextPlace3 + 9*i] == whiteKnight || piecePos[nextPlace3 + 9*i] == whiteQueen || piecePos[nextPlace3 + 9*i] == whiteBishop || piecePos[nextPlace3 + 9*i] == whiteTower || piecePos[nextPlace3 + 9*i] == whitePawn || piecePos[nextPlace3 + 9*i] == blackKing || piecePos[nextPlace3 + 9*i] == blackKnight || piecePos[nextPlace3 + 9*i] == blackTower || piecePos[nextPlace3 + 9*i] == blackPawn){
-				break;
-			}
-			if (piecePos[nextPlace3 + 9*i] == blackBishop || piecePos[nextPlace3 + 9*i] == blackQueen){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		//up, left diagonal 
-		for(int i = 1; i < nextPlace1 + 1; i++){
-			if (piecePos[nextPlace3 - 9*i] == whiteKnight || piecePos[nextPlace3 - 9*i] == whiteQueen || piecePos[nextPlace3 - 9*i] == whiteBishop || piecePos[nextPlace3 - 9*i] == whiteTower || piecePos[nextPlace3 - 9*i] == whitePawn || piecePos[nextPlace3 - 9*i] == blackKing || piecePos[nextPlace3 - 9*i] == blackKnight || piecePos[nextPlace3 - 9*i] == blackTower || piecePos[nextPlace3 - 9*i] == blackPawn){
-				break;
-			}
-			if (piecePos[nextPlace3 - 9*i] == blackBishop || piecePos[nextPlace3 - 9*i] == blackQueen){
+			} else {
 				return throwInvalidMoveException(kingMoveException, mustPrint);
 			}
 		}
 	}
-	//same but for blackKing
-	if (*currentPiece == blackKing){
-		//up, right diagonal 
-		for(int i = 1; i < 8 - nextPlace1; i++){
-			if (piecePos[nextPlace3 - 7*i] == blackKnight || piecePos[nextPlace3 - 7*i] == blackQueen || piecePos[nextPlace3 - 7*i] == blackBishop || piecePos[nextPlace3 - 7*i] == blackTower || piecePos[nextPlace3 - 7*i] == blackPawn || piecePos[nextPlace3 - 7*i] == whiteKing || piecePos[nextPlace3 - 7*i] == whiteKnight || piecePos[nextPlace3 - 7*i] == whiteTower || piecePos[nextPlace3 - 7*i] == whitePawn){
+	//down, left diagonal 
+	for (int i = 1; i < nextPlace1 + 1; i++) {
+		char currentSquare = piecePos[nextPlace3 + 7 * i];
+		if (currentSquare != emptySquare) {
+			if (currentSquare != *enemyBishop && currentSquare != *enemyQueen) {
 				break;
-			}
-			if (piecePos[nextPlace3 - 7*i] == whiteBishop || piecePos[nextPlace3 - 7*i] == whiteQueen){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		//down, left diagonal 
-		for (int i = 1; i < nextPlace1 + 1; i++){
-			if (piecePos[nextPlace3 + 7*i] == blackKnight || piecePos[nextPlace3 + 7*i] == blackQueen || piecePos[nextPlace3 + 7*i] == blackBishop || piecePos[nextPlace3 + 7*i] == blackTower || piecePos[nextPlace3 + 7*i] == blackPawn || piecePos[nextPlace3 + 7*i] == whiteKing || piecePos[nextPlace3 + 7*i] == whiteKnight || piecePos[nextPlace3 + 7*i] == whiteTower || piecePos[nextPlace3 + 7*i] == whitePawn){
-				break;
-			}
-			if (piecePos[nextPlace3 + 7*i] == whiteBishop || piecePos[nextPlace3 + 7*i] == whiteQueen){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		//down, right diagonal
-		for (int i = 1; i < 8 - nextPlace1; i++){
-			if (piecePos[nextPlace3 + 9*i] == blackKnight || piecePos[nextPlace3 + 9*i] == blackQueen || piecePos[nextPlace3 + 9*i] == blackBishop || piecePos[nextPlace3 + 9*i] == blackTower || piecePos[nextPlace3 + 9*i] == blackPawn || piecePos[nextPlace3 + 9*i] == whiteKing || piecePos[nextPlace3 + 9*i] == whiteKnight || piecePos[nextPlace3 + 9*i] == whiteTower || piecePos[nextPlace3 + 9*i] == whitePawn){
-				break;
-			}
-			if (piecePos[nextPlace3 + 9*i] == whiteBishop || piecePos[nextPlace3 + 9*i] == whiteQueen){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		//up, left diagonal 
-		for (int i = 1; i < nextPlace1 + 1; i++){
-			if (piecePos[nextPlace3 - 9*i] == blackKnight || piecePos[nextPlace3 - 9*i] == blackQueen || piecePos[nextPlace3 - 9*i] == blackBishop || piecePos[nextPlace3 - 9*i] == blackTower || piecePos[nextPlace3 - 9*i] == blackPawn || piecePos[nextPlace3 - 9*i] == whiteKing || piecePos[nextPlace3 - 9*i] == whiteKnight || piecePos[nextPlace3 - 9*i] == whiteTower || piecePos[nextPlace3 - 9*i] == whitePawn){
-				break;
-			}
-			if (piecePos[nextPlace3 - 9*i] == whiteBishop || piecePos[nextPlace3 - 9*i] == whiteQueen){
+			} else {
 				return throwInvalidMoveException(kingMoveException, mustPrint);
 			}
 		}
 	}
+	//down, right diagonal
+	for (int i = 1; i < 8 - nextPlace1; i++) {
+		char currentSquare = piecePos[nextPlace3 + 9 * i];
+		if (currentSquare != emptySquare) {
+			if (currentSquare != *enemyBishop && currentSquare != *enemyQueen) {
+				break;
+			} else {
+				return throwInvalidMoveException(kingMoveException, mustPrint);
+			}
+		}
+	}
+	//up, left diagonal 
+	for (int i = 1; i < nextPlace1 + 1; i++) {
+		char currentSquare = piecePos[nextPlace3 - 9 * i];
+		if (currentSquare != emptySquare) {
+			if (currentSquare != *enemyBishop && currentSquare != *enemyQueen) {
+				break;
+			} else {
+				return throwInvalidMoveException(kingMoveException, mustPrint);
+			}
+		}
+	}
+
+
 	//avoid moving in the reach of the towers and queens
-	if (*currentPiece == whiteKing){
-		//right
-		for(int i = 1; i < 8 - nextPlace1; i++){
-			if (piecePos[nextPlace3 +i] == whiteKnight || piecePos[nextPlace3 +i] == whiteQueen || piecePos[nextPlace3 +i] == whiteBishop || piecePos[nextPlace3 +i] == whiteTower || piecePos[nextPlace3 +i] == whitePawn || piecePos[nextPlace3 +i] == blackKing || piecePos[nextPlace3 +i] == blackKnight || piecePos[nextPlace3 +i] == blackBishop || piecePos[nextPlace3 +i] == blackPawn){
+	//right
+	for (int i = 1; i < 8 - nextPlace1; i++) {
+		char currentSquare = piecePos[nextPlace3 + i];
+		if (currentSquare != emptySquare) {
+			if (currentSquare != *enemyTower && currentSquare != *enemyQueen) {
 				break;
-			}
-			if (piecePos[nextPlace3 +i] == blackTower || piecePos[nextPlace3 +i] == blackQueen){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		//left
-		for (int i = 1; i < nextPlace1 + 1; i++){
-			if (piecePos[nextPlace3 -i] == whiteKnight || piecePos[nextPlace3 -i] == whiteQueen || piecePos[nextPlace3 -i] == whiteBishop || piecePos[nextPlace3 -i] == whiteTower || piecePos[nextPlace3 -i] == whitePawn || piecePos[nextPlace3 -i] == blackKing || piecePos[nextPlace3 -i] == blackKnight || piecePos[nextPlace3 -i] == blackBishop || piecePos[nextPlace3 -i] == blackPawn){
-				break;
-			}
-			if (piecePos[nextPlace3 -i] == blackTower || piecePos[nextPlace3 -i] == blackQueen){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		//up
-		for (int i = 1; i < 9 - nextPlace2; i++){
-			if (piecePos[nextPlace3 -8*i] == whiteKnight || piecePos[nextPlace3 -8*i] == whiteQueen || piecePos[nextPlace3 -8*i] == whiteBishop || piecePos[nextPlace3 -8*i] == whiteTower || piecePos[nextPlace3 -8*i] == whitePawn || piecePos[nextPlace3 -8*i] == blackKing || piecePos[nextPlace3 -8*i] == blackKnight || piecePos[nextPlace3 -8*i] == blackBishop || piecePos[nextPlace3 -8*i] == blackPawn){
-				break;
-			}
-			if (piecePos[nextPlace3 -8*i] == blackTower || piecePos[nextPlace3 -8*i] == blackQueen){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		//down
-		for (int i = 1; i < nextPlace2; i++) {
-			if (piecePos[nextPlace3 +8*i] == whiteKnight || piecePos[nextPlace3 +8*i] == whiteQueen || piecePos[nextPlace3 +8*i] == whiteBishop || piecePos[nextPlace3 +8*i] == whiteTower || piecePos[nextPlace3 +8*i] == whitePawn || piecePos[nextPlace3 +8*i] == blackKing || piecePos[nextPlace3 +8*i] == blackKnight || piecePos[nextPlace3 +8*i] == blackBishop || piecePos[nextPlace3 +8*i] == blackPawn){
-				break;
-			}
-			if (piecePos[nextPlace3 +8*i] == blackTower || piecePos[nextPlace3 +8*i] == blackQueen) {
+			} else {
 				return throwInvalidMoveException(kingMoveException, mustPrint);
 			}
 		}
 	}
-	if (*currentPiece == blackKing){
-		//right
-		for(int i = 1; i < 8 - nextPlace1; i++){
-			if (piecePos[nextPlace3 +i] == blackKnight || piecePos[nextPlace3 +i] == blackQueen || piecePos[nextPlace3 +i] == blackBishop || piecePos[nextPlace3 +i] == blackTower || piecePos[nextPlace3 +i] == blackPawn || piecePos[nextPlace3 +i] == whiteKing || piecePos[nextPlace3 +i] == whiteKnight || piecePos[nextPlace3 +i] == whiteBishop || piecePos[nextPlace3 +i] == whitePawn){
+	//left
+	for (int i = 1; i < nextPlace1 + 1; i++) {
+		char currentSquare = piecePos[nextPlace3 - i];
+		if (currentSquare != emptySquare) {
+			if (currentSquare != *enemyTower && currentSquare != *enemyQueen) {
 				break;
-			}
-			if (piecePos[nextPlace3 +i] == whiteTower || piecePos[nextPlace3 +i] == whiteQueen){
+			} else {
 				return throwInvalidMoveException(kingMoveException, mustPrint);
 			}
 		}
-		//left
-		for(int i = 1; i < nextPlace1 + 1; i++){
-			if (piecePos[nextPlace3 -i] == blackKnight || piecePos[nextPlace3 -i] == blackQueen || piecePos[nextPlace3 -i] == blackBishop || piecePos[nextPlace3 -i] == blackTower || piecePos[nextPlace3 -i] == blackPawn || piecePos[nextPlace3 -i] == whiteKing || piecePos[nextPlace3 -i] == whiteKnight || piecePos[nextPlace3 -i] == whiteBishop || piecePos[nextPlace3 -i] == whitePawn){
+	}
+	//up
+	for (int i = 1; i < 9 - nextPlace2; i++) {
+		char currentSquare = piecePos[nextPlace3 - 8 * i];
+		if (currentSquare != emptySquare) {
+			if (currentSquare != *enemyTower && currentSquare != *enemyQueen) {
 				break;
-			}
-			if (piecePos[nextPlace3 -i] == whiteTower || piecePos[nextPlace3 -i] == whiteQueen){
+			} else {
 				return throwInvalidMoveException(kingMoveException, mustPrint);
 			}
 		}
-		//up
-		for(int i = 1; i < 9 - nextPlace2; i++){
-			if (piecePos[nextPlace3 -8*i] == blackKnight || piecePos[nextPlace3 -8*i] == blackQueen || piecePos[nextPlace3 -8*i] == blackBishop || piecePos[nextPlace3 -8*i] == blackTower || piecePos[nextPlace3 -8*i] == blackPawn || piecePos[nextPlace3 -8*i] == whiteKing || piecePos[nextPlace3 -8*i] == whiteKnight || piecePos[nextPlace3 -8*i] == whiteBishop || piecePos[nextPlace3 -8*i] == whitePawn){
+	}
+	//down
+	for (int i = 1; i < nextPlace2; i++) {
+		char currentSquare = piecePos[nextPlace3 + 8 * i];
+		if (currentSquare != emptySquare) {
+			if (currentSquare != *enemyTower && currentSquare != *enemyQueen) {
 				break;
-			}
-			if (piecePos[nextPlace3 -8*i] == whiteTower || piecePos[nextPlace3 -8*i] == whiteQueen){
-				return throwInvalidMoveException(kingMoveException, mustPrint);
-			}
-		}
-		//down
-		for(int i = 1; i < nextPlace2; i++){
-			if (piecePos[nextPlace3 +8*i] == blackKnight || piecePos[nextPlace3 +8*i] == blackQueen || piecePos[nextPlace3 +8*i] == blackBishop || piecePos[nextPlace3 +8*i] == blackTower || piecePos[nextPlace3 +8*i] == blackPawn || piecePos[nextPlace3 +8*i] == whiteKing || piecePos[nextPlace3 +8*i] == whiteKnight || piecePos[nextPlace3 +8*i] == whiteBishop || piecePos[nextPlace3 +8*i] == whitePawn){
-				break;
-			}
-			if (piecePos[nextPlace3 +8*i] == whiteTower || piecePos[nextPlace3 +8*i] == whiteQueen){
+			} else {
 				return throwInvalidMoveException(kingMoveException, mustPrint);
 			}
 		}
@@ -477,23 +383,20 @@ int validateKingMove(char piecePos[], char untakablePieces[], char* currentPiece
 }
 
 int validateKnightMove(char piecePos[], char untakablePieces[], int previousPlace1, int previousPlace2, int nextPlace1, int nextPlace2, int nextPlace3, bool mustPrint) {
-	if (fabs(previousPlace1 - nextPlace1) > 2){
+	if (fabs(previousPlace1 - nextPlace1) > 2) {
 		return throwInvalidMoveException(knightMoveException, mustPrint);
 	}
-	if (fabs(previousPlace2 - nextPlace2) > 2){
+	if (fabs(previousPlace2 - nextPlace2) > 2) {
 		return throwInvalidMoveException(knightMoveException, mustPrint);
-	}
-	else if (fabs(previousPlace1 - nextPlace1) == 2){ 
-		if (fabs(previousPlace2 - nextPlace2) != 1){
+	} else if (fabs(previousPlace1 - nextPlace1) == 2) { 
+		if (fabs(previousPlace2 - nextPlace2) != 1) {
 			return throwInvalidMoveException(knightMoveException, mustPrint);
 		}
-	}
-	else if (fabs(previousPlace2 - nextPlace2) == 2){
-		if (fabs(previousPlace1 - nextPlace1) != 1){
+	} else if (fabs(previousPlace2 - nextPlace2) == 2) {
+		if (fabs(previousPlace1 - nextPlace1) != 1) {
 			return throwInvalidMoveException(knightMoveException, mustPrint);
 		}
-	}
-	else if (fabs(previousPlace1 - nextPlace1) == 1 && fabs(previousPlace2 - nextPlace2) == 1){
+	} else if (fabs(previousPlace1 - nextPlace1) == 1 && fabs(previousPlace2 - nextPlace2) == 1){
 		return throwInvalidMoveException(knightMoveException, mustPrint);
 	}
 	

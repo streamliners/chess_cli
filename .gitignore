@@ -1,0 +1,8 @@
+# ignore ALL .log files
+*.log
+
+# ignore save file
+savefile.txt
+
+# ignore save file
+chessMake
