@@ -7,12 +7,12 @@ CFLAGS = -Wall -g
 # ****************************************************
 # targets needed to bring the executable up to date
 
-chessMake: chess.o moveValidation.o checkValidation.o global.o
-	$(CC) $(CFLAGS) -o chessMake chess.o moveValidation.o checkValidation.o global.o
+chessMake: chessMain.o moveValidation.o checkValidation.o global.o
+	$(CC) $(CFLAGS) -o chessMake chessMain.o moveValidation.o checkValidation.o global.o
 
 # The chess.o target can be written more simply
-chess.o: chess.cpp moveValidation.h checkValidation.h global.h
-	$(CC) $(CFLAGS) -c chess.cpp
+chessMain.o: chessMain.cpp moveValidation.h checkValidation.h global.h
+	$(CC) $(CFLAGS) -c chessMain.cpp
 
 moveValidation.o: moveValidation.h
 
