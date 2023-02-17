@@ -213,32 +213,32 @@ int processChecks(char piecePos[], char previousState, bool mustPrint) {
 
 
 
-void mainMoveAndPawnPromotion(char piecePos[], char* currentPiece, int previousPlace3, int nextPlace3) {
+void mainMoveAndPawnPromotion(char piecePos[], char currentPiece, int previousPlace3, int nextPlace3) {
 	//pawn promotions
-	if (*currentPiece == whitePawn) {
+	if (currentPiece == whitePawn) {
 		// promote to a queen
 		if (nextPlace3 >= 56 && nextPlace3 <= 63){
-			*currentPiece = whiteQueen;
+			currentPiece = whiteQueen;
 		}
-	} else if (*currentPiece == blackPawn) {
+	} else if (currentPiece == blackPawn) {
 		// promote to a queen
 		if (nextPlace3 >= 0 && nextPlace3 <= 7) {
-			*currentPiece = blackQueen;
+			currentPiece = blackQueen;
 		}
 	}
 
 	//do the move		
 	piecePos[previousPlace3] = emptySquare;
-	piecePos[nextPlace3] = *currentPiece;
+	piecePos[nextPlace3] = currentPiece;
 }
 
-int foundSolution(char piecePos[], char* currentPiece, char currentState, int previousPlace1, int previousPlace2, int nextPlace1, int nextPlace2) {
+int foundSolution(char piecePos[], char currentPiece, char currentState, int previousPlace1, int previousPlace2, int nextPlace1, int nextPlace2) {
 	bool mustPrint = false;
 	
 	int previousPlace3 = 64 - ((previousPlace2*8) - previousPlace1);
 	int nextPlace3 = 64 - ((nextPlace2*8) - nextPlace1);
 	char* untakablePieces[7];
-	if (*currentPiece == whiteKing || *currentPiece == whiteKnight || *currentPiece == whiteQueen || *currentPiece == whiteBishop || *currentPiece == whiteTower || *currentPiece == whitePawn) {
+	if (currentPiece == whiteKing || currentPiece == whiteKnight || currentPiece == whiteQueen || currentPiece == whiteBishop || currentPiece == whiteTower || currentPiece == whitePawn) {
 		if (0 != validateAllMoves(piecePos, whiteUntakablePieces, currentPiece, previousPlace1, previousPlace2, previousPlace3, nextPlace1, nextPlace2, nextPlace3, mustPrint)) {
 			return 1;
 		}
@@ -295,7 +295,7 @@ int isCheckmate(char piecePos[], char arrayPieces[], char previousState) {
 						char newPiecePos[71];
 						strcpy(newPiecePos, piecePos);
 						char* currentPiece = arrayPieces;
-						if (0 == foundSolution(piecePos, currentPiece, previousState, j, k, o, q))  {
+						if (0 == foundSolution(piecePos, *currentPiece, previousState, j, k, o, q))  {
 							cout << arrayPieces[i] << " " << getInputFromXCoordinates(j) << k << " " << getInputFromXCoordinates(o) << q << " is a possible solution." << endl;
 							return 0;
 						}
@@ -326,7 +326,7 @@ int isStalemate(char piecePos[], char arrayPieces[], char previousState) {
 						char newPiecePos[71];
 						strcpy(newPiecePos, piecePos);
 						char* currentPiece = arrayPieces;
-						if (0 == foundSolution(piecePos, currentPiece, previousState, j, k, o, q))  {
+						if (0 == foundSolution(piecePos, *currentPiece, previousState, j, k, o, q))  {
 							return 0;
 						}
 					}		
