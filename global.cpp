@@ -4,8 +4,8 @@ using namespace std;
 
 const char emptySquare = ' ';
 //1 means "Whites played. Next turn: black", and 2 means "Blacks played. Next turn: white"
-const char whitesTurn = '1';
-const char blacksTurn = '2';
+const char whitesTurn = '2';
+const char blacksTurn = '1';
 const char* whitesTurnStatus = "White's turn";
 const char* blacksTurnStatus = "Black's turn";
 

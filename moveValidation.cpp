@@ -12,8 +12,8 @@ const char *wrongCoordinatesException = "The coordinates are wrong.";
 const char *invalidPieceException = "Such a piece does not exist.";					
 const char *movingNothingException = "You are not moving anything. Try again.";							
 const char *pieceIsntHereException = "You are moving a piece that is not here.";								
-const char *wrongTurnBlackException = "This is not your turn. This is the blacks' turn.";								
-const char *wrongTurnWhiteException = "This is not your turn. This is the whites' turn.";	
+const char *wrongTurnBlackException = "This is not your turn. This is the whites' turn.";								
+const char *wrongTurnWhiteException = "This is not your turn. This is the blacks' turn.";	
 							
 const char *towerMoveException = "Towers cannot move like this.";					
 const char *towerPassException = "Towers cannot pass over other pieces.";								
@@ -150,14 +150,7 @@ int validateKingMove(char piecePos[], char untakablePieces[], char currentPiece,
 		|| (fabs(previousPlace1 - nextPlace1) == 1 && fabs(previousPlace2 - nextPlace2) == 0)))  {			
 		return throwInvalidMoveException(kingMoveException, mustPrint);
 	}
-	
-		/*-------------
-          | -9| -8| -7|
-          -------------
-          | -1| k | +1| 
-          -------------
-          | +7| +8| +9| 
-          -------------*/
+
 	char* enemyKing;
 	char* enemyQueen;
 	char* enemyBishop;

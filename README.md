@@ -1,26 +1,19 @@
-# ChessGame
+# chess-cli
 Chess game
 
-The conventions to use this program are:
--input form: piece previousLocalization(a,b) nextLocalization(a,b)
--color: white -> lowerCaps, black -> AllCaps
+The convention is that the first position is the previous position and the second one is the next.
+ b1 c3 would mean a knight going from b1 to c3
 
 FEATURES:
-* preventing wrong moves
-* preventing the wrong pieces from passing over other pieces
-* preventing pieces from eating those of the same color and the enemy king
-* pawn promotion
-* reset option
-* sandbox mode to debug, or to cheat
+* preventing illegal moves (passing over other pieces, eating one's own allies, etc.)
+* handling the special turns (like pawn promotion)
 * check detection, and prevention of any move that doesn't solve it
-* turn-taking
-* deal with wrong inputs
 * recognizes checkmates and stalemates
-
+* special options, like reset, or sandbox mode to debug or cheat
 
 TO RUN
 make
 ./chessMake
-./chessMake P e2 e3
+./chessMake e2 e3
 
 ![Alt text](./screenshot.png)
