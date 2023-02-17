@@ -1,5 +1,6 @@
 # ignore ALL .log files
 *.log
+*.o
 
 # ignore save file
 savefile.txt
