@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
 
 	// sandbox mode (input format is "./chessMake sandbox piece nextPlace(a,b)")
 	// makes a new piece appear at given coordinates
-	/*if (argc == 4 && argv1 == codeSandbox) {
+	if (argc == 4 && argv1 == codeSandbox) {
 		char *currentPiece = argv[2];
 		int nextPlace1 = getXCoordinatesFromInput(argv[3]);
 		int nextPlace2 = getYCoordinatesFromInput(argv[3]);
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
 		piecePos[nextPlace3] = *currentPiece;
 		drawBoard(piecePos);
 		
-	} else*/ if (argc == 2 && argv1 == codeShow) {
+	} else if (argc == 2 && argv1 == codeShow) {
 		// show mode
 		// input format is "./chessMake show"
 		drawBoard(piecePos);
